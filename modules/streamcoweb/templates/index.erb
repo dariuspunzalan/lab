@@ -6,11 +6,37 @@
     </head>
 
     <body>
-	<h1>
+	<h1 align="center">
 	<?php 
 	echo "This portal is served by ";
 	echo gethostname();
-	?></h1>
+	echo "</h1><br /><br />";
+	$servername = "<%= @dbpath -%>";
+	$username = "<%= @dbuser -%>";
+	$password = '<%= @dbpassword -%>';
+	$dbname = "<%= @dbname -%>";
+
+	// Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+	if ($conn->connect_error) {
+		die("Connection failed: " . $conn->connect_error);
+	} 
+	$result = mysqli_query($conn, "SELECT * FROM employees");
+	echo "<br> Table: employees from '$dbname' Database</br>";
+	echo "<table border='1'> <tr>
+	<th>FirstName</th><th>LastName</th><th>PhoneNumber</th><th>Email</th></tr>";
+	while ($row = mysqli_fetch_array($result)) {
+		echo "<tr>";
+		echo "<td>" . $row['first_name'] . "</td>";
+		echo "<td>" . $row['last_name'] . "</td>";
+		echo "<td>" . $row['phone_number'] . "</td>";
+		echo "<td>" . $row['email'] . "</td>";
+		echo "</tr>";
+	}
+	echo "</table>";
+
+	$conn->close();
+	?>
     </body>
 </html>
 

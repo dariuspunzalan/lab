@@ -6,7 +6,12 @@ class streamcoweb::services {
 			ensure	=> installed,
 		}
 	}
-	
+	# Set seebool http network connect
+	selboolean {'httpd_can_network_connect':
+		name	=>'httpd_can_network_connect',
+		persistent => true,
+		value	=> on,
+	}	
 	# Add index.html
 	file {'/usr/share/nginx/html/index.php':
 		ensure	=> file,
@@ -88,7 +93,10 @@ class streamcoweb::services {
 		name => 'nginx',
 		ensure	=> running,
 		enable	=> true,
-		subscribe => File["/etc/nginx/nginx.conf"]
+		subscribe => [
+                  File["/etc/nginx/nginx.conf"],
+                  File["/etc/nginx/conf.d/ssl.conf"],
+                ],
 	}
 	service {php-fpm:
 		name	=> php-fpm,
